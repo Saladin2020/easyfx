@@ -1,0 +1,12 @@
+{
+  "format": "easyfx/1",
+  "th": "คบไฟสีฟ้า",
+  "en": "Blue spirit torch",
+  "base": "torch_fire",
+  "set": {
+    "seed": 1301,
+    "0.ramp": ["#c8f0ff", "#7cc8e8", "#2c6aa8"],
+    "2.ramp": ["#ffffff", "#c8f0ff", "#7cc8e8", "#4f8ac8", "#2c6aa8"],
+    "3.ramp": ["#c8f0ff", "#4f8ac8"]
+  }
+}

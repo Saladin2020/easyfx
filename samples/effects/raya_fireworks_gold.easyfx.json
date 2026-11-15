@@ -1,0 +1,11 @@
+{
+  "format": "easyfx/1",
+  "th": "พลุรายอสีทอง",
+  "en": "Hari Raya fireworks (gold)",
+  "base": "raya_fireworks",
+  "set": {
+    "seed": 1447,
+    "1.ramp": ["#ffffff", "#fff6c8", "#ffd86a", "#f4ae3d", "#c48a3a"],
+    "1.count": 34
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "format": "easyfx/1",
+  "th": "โคมลอยเต็มฟ้า",
+  "en": "Sky full of lanterns",
+  "base": "khom_loi",
+  "set": { "seed": 2567, "0.count": 10, "1.count": 10, "0.sizeStart": 4, "0.sizeEnd": 2 }
+}
