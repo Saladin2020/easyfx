@@ -396,6 +396,19 @@ func _init() -> void:
 		if not wok:
 			bad += 1
 		holder.free()
+	var Fx2 = load("res://easyfx/easyfx.gd")
+	var h2 := Node2D.new()
+	var lt: Node2D = Fx2.lighting(h2, Vector2(192, 96))
+	Fx2.set_light(lt, {"tint": [255, 140, 100], "dark": 0.2, "lamps": 0.5}, [Vector3(40, 50, 20), Vector3(120, 50, 20)])
+	var lok: bool = lt.get_node("Lamps").get_child_count() == 8 and absf((lt.get_node("Veil") as ColorRect).color.a - 0.2) < 0.001 and (lt.get_node("Tint") as ColorRect).color.r8 == 255
+	print("L| lighting lamps=%d %s" % [lt.get_node("Lamps").get_child_count(), "ok" if lok else "FAIL"])
+	var depths := [Fx2.flood_depth(0.1), Fx2.flood_depth(0.35), Fx2.flood_depth(0.5), Fx2.flood_depth(0.7), Fx2.flood_depth(1.0)]
+	var fl: Node2D = Fx2.flood(h2, Vector2(192, 96), 80.0, 0.7)
+	var fok: bool = str(depths) == "[1, 4, 10, 18, 30]" and fl.get_child_count() >= 2 and absf((fl.get_child(0) as ColorRect).position.y - 62.0) < 0.01
+	print("D| flood depths=%s %s" % [str(depths), "ok" if fok else "FAIL"])
+	if not (lok and fok):
+		bad += 1
+	h2.free()
 	print("OK" if bad == 0 else "FAILED %d" % bad)
 	quit(0 if bad == 0 else 1)
 `;

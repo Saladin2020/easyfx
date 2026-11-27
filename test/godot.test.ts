@@ -27,6 +27,8 @@ describe.skipIf(!GODOT)("Godot export", () => {
     const run = spawnSync(GODOT!, ["--headless", "--path", out, "--script", "res://test_fx.gd"], { encoding: "utf8", timeout: 120_000 });
     expect(run.stdout).toMatch(/^OK$/m);
     expect(run.stdout).toMatch(/^W\| weather storm tiles=8 ok$/m);
+    expect(run.stdout).toMatch(/^L\| lighting lamps=8 ok$/m);
+    expect(run.stdout).toMatch(/^D\| flood depths=\[1, 4, 10, 18, 30\] ok$/m);
     expect(run.stdout.match(/^F\| .* ok$/gm)?.length).toBe(PRESETS.length + 3);
     expect(run.stdout).toMatch(/^F\| campfire frames=12 loop=true particles=2 ok$/m);
     expect(run.stdout).toMatch(/^F\| explosion_big frames=14 loop=false particles=5 ok$/m);

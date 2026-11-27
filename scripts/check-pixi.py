@@ -42,6 +42,15 @@ async def main():
         await pg.wait_for_timeout(2000)
         spawned_after = await pg.evaluate("window.__fx.spawned.filter((s) => !s.destroyed).length")
         textures = await pg.evaluate("window.__fx.textures")
+        # town life overlays: lighting (multiply tint + veil + lamp glows) and flood water
+        overlays = await pg.evaluate("""() => {
+          const { fx, app } = window.__fx;
+          const l = fx.lighting(app.stage, { width: 320, height: 180 }).set({ tint: [250, 140, 100], dark: 0.2, lamps: 0.5 }).setLamps([{ x: 40, y: 60 }, { x: 120, y: 60 }]);
+          const f = fx.flood(app.stage, { width: 320, height: 180, ground: 150 }).setLevel(0.7);
+          const r = { light: l.state(), surface: f.surface(), ripples: f.children[1].children.length };
+          l.destroy({ children: true }); f.destroy({ children: true });
+          return r;
+        }""")
         if SHOT:
             await pg.locator("canvas").screenshot(path=SHOT)
         problems = []
@@ -61,8 +70,10 @@ async def main():
             problems.append(f"textures {textures} != frames {sum(e['frames'] for e in man['effects'])}")
         if spawned_alive != 1 or spawned_after != 0:
             problems.append(f"one-shot spawn alive={spawned_alive} after={spawned_after} (want 1 then 0)")
+        if overlays["light"]["lampCount"] != 2 or abs(overlays["light"]["dark"] - 0.2) > 1e-6 or overlays["surface"] != 132 or (("flood_ripple" in [e["id"] for e in man["effects"]]) and overlays["ripples"] < 6):
+            problems.append(f"overlays {overlays}")
         real = [e for e in errs if "GL Driver Message" not in e and "Failed to load resource" not in e]
-        report = {"effects": len(first), "textures": textures, "problems": problems, "errors": real, "spawned": [spawned_alive, spawned_after]}
+        report = {"overlays": overlays, "effects": len(first), "textures": textures, "problems": problems, "errors": real, "spawned": [spawned_alive, spawned_after]}
         print(json.dumps(report, ensure_ascii=False))
         await b.close()
         if problems or real:
