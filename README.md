@@ -155,6 +155,20 @@ const fx = await loadFx(PIXI, "easyfx.json");
 const coins = fx.create("coin_burst"); coins.position.set(120, 80); app.stage.addChild(coins); coins.play();
 ```
 
+### Weather overlays
+
+`rain`, `storm_rain`, `fog_drift` and `wind_gust` tile seamlessly. `weather()` lays one over the screen with a tint,
+keyed by the [Easy NPC](../easynpc) calendar weather (`clear cloudy rain storm wind fog`):
+
+```js
+const w = fx.weather(app.stage, npcs.weather(), { width: 640, height: 360, scale: 2 });
+npcs.on("weather", (k) => w.set(k));
+```
+
+```gdscript
+NPCs.weather_changed.connect(func(k): EasyFx.weather($Overlay, k, get_viewport_rect().size, 2.0))
+```
+
 ## MCP
 
 `npm run mcp` (stdio) or `npm run mcp:http` (→ `http://127.0.0.1:8849/mcp`). Tools: `workspace_info`, `list_effects`,

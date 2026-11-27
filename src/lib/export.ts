@@ -385,6 +385,17 @@ func _init() -> void:
 		print("F| %s frames=%d loop=%s particles=%d %s" % [id, n, str(e["loop"]), pc, "ok" if ok else "FAIL"])
 		if not ok:
 			bad += 1
+	if ResourceLoader.exists("res://easyfx/scenes/storm_rain.tscn"):
+		var Fx = load("res://easyfx/easyfx.gd")
+		var holder := Node2D.new()
+		var w: Node2D = Fx.weather(holder, "storm", Vector2(192, 96))
+		var tiles := w.get_child_count() - 1
+		Fx.weather(holder, "clear", Vector2(192, 96))
+		var wok := tiles == 8 and holder.get_child_count() == 1
+		print("W| weather storm tiles=%d %s" % [tiles, "ok" if wok else "FAIL"])
+		if not wok:
+			bad += 1
+		holder.free()
 	print("OK" if bad == 0 else "FAILED %d" % bad)
 	quit(0 if bad == 0 else 1)
 `;
