@@ -238,3 +238,12 @@ Chinese-Thai shrine on the same street. หมู่บ้านพหุวั�
 
 All effects, shapes and props are generated from code and CC0. Kanit © The Kanit Project Authors (SIL OFL 1.1),
 used only in the docs art. See [CREDITS.md](CREDITS.md). Code: MIT © Salahuddin Benno.
+
+## Town life overlays (Easy NPC lighting + flooding)
+
+- `fx.lighting(parent, { width, height })` → `.set(npcs.light())` blends a multiply tint, a darkness veil and
+  pixel-stepped lamp glows (`.setLamps([{ x, y, r }])`) through dawn → morning → noon → sunset → night.
+  Godot: `EasyFx.lighting(parent, size)` + `EasyFx.set_light(node, NPCs.light(), [Vector3(x, y, r)])`.
+- `fx.flood(parent, { width, height, ground })` → `.setLevel(npcs.flood())`: puddles below 0.15, then murky water
+  rising ankle (4 px) → knee (14 px) → waist (24 px) with the tileable `flood_ripple` effect on the surface.
+  Godot: `EasyFx.flood(parent, size, ground_y, level)`; shared depth table in `src/shared/flood.ts`.

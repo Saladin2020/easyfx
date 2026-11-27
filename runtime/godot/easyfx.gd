@@ -85,3 +85,113 @@ static func weather(parent: Node, kind: String, size: Vector2, scale := 1.0) -> 
 	root.set_meta("weather", kind)
 	parent.add_child(root)
 	return root
+
+
+## Time-of-day lighting (Easy NPC NPCs.light()): multiply tint + darkness veil + lamp glows.
+##   var l := EasyFx.lighting($Overlay, size);  EasyFx.set_light(l, NPCs.light(), [Vector3(x, y, r)])
+static func lighting(parent: Node, size: Vector2) -> Node2D:
+	var old := parent.get_node_or_null("EasyFxLighting")
+	if old != null:
+		parent.remove_child(old)
+		old.queue_free()
+	var root := Node2D.new()
+	root.name = "EasyFxLighting"
+	var tint := ColorRect.new()
+	tint.name = "Tint"
+	tint.size = size
+	tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := CanvasItemMaterial.new()
+	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
+	tint.material = mat
+	tint.color = Color(1, 1, 1, 1)
+	var veil := ColorRect.new()
+	veil.name = "Veil"
+	veil.size = size
+	veil.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	veil.color = Color(0.043, 0.051, 0.149, 0)
+	var glow := Node2D.new()
+	glow.name = "Lamps"
+	var gm := CanvasItemMaterial.new()
+	gm.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	glow.material = gm
+	root.add_child(tint)
+	root.add_child(veil)
+	root.add_child(glow)
+	parent.add_child(root)
+	return root
+
+
+## light = {tint: [r,g,b] | tintHex, dark, lamps}; lamps = Array of Vector3(x, y, radius).
+static func set_light(root: Node2D, light: Dictionary, lamps := []) -> void:
+	var t: Array = light.get("tint", [255, 255, 255])
+	(root.get_node("Tint") as ColorRect).color = Color8(int(t[0]), int(t[1]), int(t[2]))
+	(root.get_node("Veil") as ColorRect).color.a = clampf(float(light.get("dark", 0.0)), 0.0, 1.0)
+	var glow := root.get_node("Lamps") as Node2D
+	for ch in glow.get_children():
+		glow.remove_child(ch)
+		ch.queue_free()
+	var a := 0.09 * clampf(float(light.get("lamps", 0.0)), 0.0, 1.0)
+	if a <= 0.001:
+		return
+	for p in lamps:
+		for ring in [4, 3, 2, 1]:
+			var poly := Polygon2D.new()
+			var r: float = p.z * ring / 4.0
+			var pts := PackedVector2Array()
+			for i in 16:
+				pts.append(Vector2(p.x, p.y) + Vector2(cos(TAU * i / 16.0), sin(TAU * i / 16.0)) * r)
+			poly.polygon = pts
+			poly.color = Color(1.0, 0.784, 0.439, a)
+			glow.add_child(poly)
+
+
+## Easy NPC flood level → water depth (px) above the ground line (same table as easyfx-pixi.js / flood.ts).
+const FLOOD_DEPTH := [[0.0, 0.0], [0.15, 1.0], [0.35, 4.0], [0.6, 14.0], [0.85, 24.0], [1.0, 30.0]]
+
+
+static func flood_depth(level: float, rise := 30.0) -> int:
+	var l := clampf(level, 0.0, 1.0)
+	for i in range(1, FLOOD_DEPTH.size()):
+		var a: float = FLOOD_DEPTH[i - 1][0]
+		var da: float = FLOOD_DEPTH[i - 1][1]
+		var b: float = FLOOD_DEPTH[i][0]
+		var db: float = FLOOD_DEPTH[i][1]
+		if l <= b:
+			return int(floor((da + (l - a) / (b - a) * (db - da)) * (rise / 30.0) + 0.5))
+	return int(rise)
+
+
+## Flood water for a side-view scene: call again with a new level to update.
+static func flood(parent: Node, size: Vector2, ground: float, level: float, rise := 30.0) -> Node2D:
+	var old := parent.get_node_or_null("EasyFxFlood")
+	if old != null:
+		parent.remove_child(old)
+		old.queue_free()
+	var root := Node2D.new()
+	root.name = "EasyFxFlood"
+	root.set_meta("level", level)
+	parent.add_child(root)
+	if level < 0.15:
+		return root
+	var y := ground - flood_depth(level, rise)
+	var water := ColorRect.new()
+	water.position = Vector2(0, y)
+	water.size = Vector2(size.x, size.y - y)
+	water.color = Color(0.306, 0.431, 0.369, 0.6)
+	water.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(water)
+	var line := ColorRect.new()
+	line.position = Vector2(0, y)
+	line.size = Vector2(size.x, 1)
+	line.color = Color(0.847, 0.937, 0.902, 0.8)
+	root.add_child(line)
+	var path := "res://easyfx/scenes/flood_ripple.tscn"
+	if ResourceLoader.exists(path):
+		var scene := load(path) as PackedScene
+		var x := 24.0
+		while x < size.x:
+			var s := scene.instantiate() as Node2D
+			s.position = Vector2(x, y + 2)
+			root.add_child(s)
+			x += 48.0
+	return root

@@ -170,6 +170,14 @@ export const PRESETS: FxPreset[] = [
       P({ name: "leaves", emit: "stream", count: 3, lifetime: 12, speed: 3.6, speedJitter: 0.3, angle: 8, spread: 14, gravity: 0, emitter: { shape: "rect", x: -0.05, y: 0.5, w: 4, h: 36 }, shape: "leaf", sizeStart: 2, ramp: RAMPS.leaves, rampMode: "random", wobble: 3, wobbleFreq: 2, spin: 0.4, outline: "#2a221c" }),
     ],
   }),
+  fx("flood_ripple", "ระลอกน้ำท่วม", "Flood ripples", "nature", ["weather", "flood", "overlay", "tileable", "water"], {
+    size: 48, height: 12, frames: 12, fps: 8, loop: true, seed: 109,
+    anchor: { x: 0.5, y: 0.5 },
+    layers: [
+      P({ name: "glints", emit: "stream", count: 7, lifetime: 12, speed: 0.45, speedJitter: 0.2, angle: 0, spread: 3, gravity: 0, emitter: { shape: "rect", x: 0.5, y: 0.5, w: 56, h: 6 }, shape: "glint", sizeStart: 3, sizeEnd: 1, ramp: ["#f4fbf8", "#bfe0d8", "#8fbcb0"], alpha: 0.85, fade: 0.5, fadeIn: 0.3 }),
+      P({ name: "foam", emit: "stream", count: 5, lifetime: 12, speed: 0.3, angle: 180, spread: 4, gravity: 0, emitter: { shape: "rect", x: 0.5, y: 0.35, w: 56, h: 3 }, shape: "pixel", sizeStart: 1, ramp: ["#e8f2ec", "#a8c8bc"], alpha: 0.7, fade: 0.6, wobble: 1, wobbleFreq: 1 }),
+    ],
+  }),
   fx("fireflies", "หิ่งห้อย", "Fireflies", "nature", ["night", "swamp", "overlay"], {
     size: 48, frames: 24, fps: 10, loop: true, seed: 37,
     layers: [
