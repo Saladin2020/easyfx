@@ -146,6 +146,30 @@ export const PRESETS: FxPreset[] = [
       P({ name: "leaves", emit: "stream", count: 7, lifetime: 24, speed: 1.6, speedJitter: 0.3, angle: 80, spread: 20, gravity: 0, emitter: { shape: "line", x: 0.45, y: -0.05, w: 52 }, shape: "leaf", sizeStart: 2, ramp: RAMPS.leaves, rampMode: "random", wobble: 4, wobbleFreq: 1, spin: 0.3, outline: "#2a221c" }),
     ],
   }),
+  fx("storm_rain", "พายุฝน", "Storm rain", "nature", ["weather", "storm", "overlay", "tileable"], {
+    size: 48, frames: 8, fps: 18, loop: true, seed: 101,
+    anchor: { x: 0.5, y: 0.5 },
+    layers: [
+      P({ name: "sheets", emit: "stream", count: 30, lifetime: 6, speed: 9, angle: 115, spread: 4, gravity: 0, emitter: { shape: "line", x: 0.7, y: -0.2, w: 72 }, shape: "spark", sizeStart: 5, ramp: ["#e4f6fb", "#9fb8d8", "#7cc8e8"], alpha: 0.8 }),
+      P({ name: "splashes", emit: "stream", count: 10, lifetime: 3, speed: 0.9, angle: -90, spread: 140, gravity: 0.12, emitter: { shape: "line", x: 0.5, y: 0.96, w: 46 }, shape: "pixel", sizeStart: 1, ramp: ["#e4f6fb", "#7cc8e8"] }),
+    ],
+  }),
+  fx("fog_drift", "หมอกลอย", "Fog drift", "nature", ["weather", "fog", "overlay", "tileable"], {
+    size: 64, height: 48, frames: 24, fps: 8, loop: true, seed: 103,
+    anchor: { x: 0.5, y: 0.5 },
+    layers: [
+      P({ name: "banks", emit: "stream", count: 9, lifetime: 24, speed: 0.35, speedJitter: 0.2, angle: 0, spread: 6, gravity: 0, emitter: { shape: "rect", x: 0.45, y: 0.55, w: 70, h: 40 }, shape: "disc", sizeStart: 9, sizeEnd: 13, ramp: ["#eef2f4", "#d8dee4"], alpha: 0.32, fade: 0.5, fadeIn: 0.3 }),
+      P({ name: "wisps", emit: "stream", count: 6, lifetime: 24, speed: 0.5, angle: 0, spread: 4, gravity: 0, emitter: { shape: "rect", x: 0.45, y: 0.5, w: 70, h: 44 }, shape: "square", sizeStart: 3, sizeEnd: 5, ramp: ["#f6f8fa", "#e4e8ec"], alpha: 0.4, fade: 0.6, fadeIn: 0.3, wobble: 1, wobbleFreq: 1 }),
+    ],
+  }),
+  fx("wind_gust", "ลมพัด", "Wind gust", "nature", ["weather", "wind", "overlay", "tileable"], {
+    size: 48, frames: 12, fps: 14, loop: true, seed: 107,
+    anchor: { x: 0.5, y: 0.5 },
+    layers: [
+      P({ name: "streaks", emit: "stream", count: 5, lifetime: 10, speed: 5, angle: 2, spread: 6, gravity: 0, emitter: { shape: "rect", x: -0.1, y: 0.5, w: 4, h: 40 }, shape: "spark", sizeStart: 6, sizeEnd: 3, ramp: ["#ffffff", "#e4f6fb"], alpha: 0.55, fade: 0.6 }),
+      P({ name: "leaves", emit: "stream", count: 3, lifetime: 12, speed: 3.6, speedJitter: 0.3, angle: 8, spread: 14, gravity: 0, emitter: { shape: "rect", x: -0.05, y: 0.5, w: 4, h: 36 }, shape: "leaf", sizeStart: 2, ramp: RAMPS.leaves, rampMode: "random", wobble: 3, wobbleFreq: 2, spin: 0.4, outline: "#2a221c" }),
+    ],
+  }),
   fx("fireflies", "หิ่งห้อย", "Fireflies", "nature", ["night", "swamp", "overlay"], {
     size: 48, frames: 24, fps: 10, loop: true, seed: 37,
     layers: [
